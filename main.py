@@ -13,7 +13,25 @@ def get_color():
     get_colors = lambda n: list(map(lambda i: "#" + "%06x" % random.randint(0, 0xFFFFFF), range(n)))
     color_list = get_colors(100)
     return random.choice(color_list)
- 
+
+def get_weather2():
+    url = 'http://t.weather.sojson.com/api/weather/city/'
+    #通过城市的中文获取城市代码
+    city = "101010100"
+    response = requests.get(url + city)
+    d = response.json()
+    weather = d["data"]["forecast"][0]["type"]
+    temphigh = d["data"]["forecast"][0]["high"][3:]
+    templow = d["data"]["forecast"][0]["low"][3:]
+    temp = templow+ '—'+temphigh
+    temph = temphigh[:-1]
+    templ = templow[:-1]
+    wind_dir = d["data"]["forecast"][0]["fx"]
+    if int(templ) <= 15:
+        xigua = "天气变凉啦，多穿点衣服哦~"
+    else:
+        xigua = "今天又是很想你的一天~"
+    return weather, temp, wind_dir, xigua
  
 def get_access_token():
     # appId
@@ -57,7 +75,7 @@ def get_weather(region):
     wind_dir = response['HeWeather6'][0]["daily_forecast"][0]["wind_dir"]
     return weather, temp, wind_dir, xigua
  
-#--------关注微信公众号：繁星资源，更多资源等你拿----------
+
 def get_birthday(birthday, year, today):
     birthday_year = birthday.split("-")[0]
     # 判断是否为农历生日
@@ -222,7 +240,7 @@ if __name__ == "__main__":
     users = config["user"]
     # 传入地区获取天气信息
     region = config["region"]
-    weather, temp, wind_dir,xigua = get_weather(region)
+    weather, temp, wind_dir,xigua = get_weather2()
     note_ch = config["note_ch"]
     note_en = config["note_en"]
     if note_ch == "" and note_en == "":
